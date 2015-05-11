@@ -8,7 +8,7 @@ class Enigma():
     """
 
     def __init__(self, num_walzen=3, random=False, alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
-        self.__num_walzen = num_walzen  
+        self.__num_walzen = num_walzen
         self.__base = alphabet[0] * num_walzen
         self.__alphabet = alphabet
         self.__walzen = [alphabet for i in range(num_walzen)]
@@ -43,7 +43,7 @@ class Enigma():
         self.__walzen[num] = walze
 
     def set_umkehrwalze(self, walze=0):
-        """Generates a random Umkehrwalze (randomly switches each letter with 
+        """Generates a random Umkehrwalze (randomly switches each letter with
         another one) or sets the Walze to the given value.
 
         Arguments:
@@ -98,14 +98,14 @@ class Enigma():
             sb = ''.join(steckerbrett)
             for i, char in enumerate(sb):
                 if char not in self.__alphabet or char in sb[i+1:]:
-                    raise InputError(steckerbrett)  
+                    raise InputError(steckerbrett)
         self.__steckerbrett = steckerbrett
 
     def set_ringkerben(self, rk=[]):
         """Sets the Ringkerben for all Walzen, indicating on which letter the
         next Walze rotates (the last one has no meaning but is left in here
         for historical reasons).
-        
+
         Arguments:
         rk -- the Ringkerben for each Walze (a list of integers between 1 and 26)
         """
@@ -122,13 +122,13 @@ class Enigma():
                 if i < 1 or i > 26:
                     raise InputError(rk)
         self.__ringkerben = rk
-        
+
     def set_base(self, base):
-        """Sets the base for all Walzen, that is the initial position of the 
-        Walzen. 
+        """Sets the base for all Walzen, that is the initial position of the
+        Walzen.
 
         Arguments:
-        base -- base letters for each Walze, first letter for the first Walze 
+        base -- base letters for each Walze, first letter for the first Walze
                 (a string)
         """
         # check whether the given base is valid
@@ -138,7 +138,7 @@ class Enigma():
             if char not in self.__alphabet:
                 raise InputError(base)
         self.__base = base
-                          
+
     def encode(self, msg, verbose=False, vverbose=False):
         """En- or decodes a given input message according to the Enigma machine
         used by the Germans in World War II.
@@ -177,7 +177,7 @@ class Enigma():
                    \nYou are using an Enigma machine with {} Walzen:\n{: >40}\
                    \n{: >40}\n{:>40}\nUmkehrwalze: {: >27}\nSteckerbrett: {}\
                    \nBase: {: >11}\nRingkerben:   {}\n{:*>79}".format("",
-                    len(wlz), wlz[0], wlz[1], wlz[2], ukw, sb, base, rk, ""))
+                  len(wlz), wlz[0], wlz[1], wlz[2], ukw, sb, base, rk, ""))
 
         # process the input message to fit requirements (upper case, list)
         msg = msg.upper()
@@ -208,39 +208,44 @@ class Enigma():
                 # get the corresponding letter Walze for each current relation Walze
                 walzen_curr = []
                 for walze in walzen:
-                    walzen_curr.append("".join([chr((num + i) % len(alphabet) + 65)\
+                    walzen_curr.append("".join([chr((num + i) % len(alphabet) + 65)
                                                for i, num in enumerate(walze)]))
 
-                if vverbose: print("{: >8}Input: {}".format("", char))
+                if vverbose:
+                    print("{: >8}Input: {}".format("", char))
 
                 # send the input character through the Steckerbrett
                 for stecker in sb:
                     if char in stecker:
                         new_char = stecker.replace(char, "")
                         lex_index = ord(new_char) - 65
-                        if vverbose: print("{: >8}Steckerbrett: {} --> {}".format("", char, new_char))
+                        if vverbose:
+                            print("{: >8}Steckerbrett: {} --> {}".format("", char, new_char))
                         break
 
-                # send the current character through the 3 selected Walzen 
+                # send the current character through the 3 selected Walzen
                 for walze in walzen_curr:
                     new_letter = walze[lex_index]
                     lex_index = ord(new_letter) - 65
-                    if vverbose: print("{: >38}".format(alphabet))
-                    if vverbose: print("{: >38} --> {}".format(walze, new_letter))
+                    if vverbose:
+                        print("{: >38}".format(alphabet))
+                        print("{: >38} --> {}".format(walze, new_letter))
 
                 # reflect the current character on the selected Umkehrwalze
                 new_letter = ukw[lex_index]
                 lex_index = ord(new_letter) - 65
-                if vverbose: print("{: >42}".format(alphabet))
-                if vverbose: print("{: >42} --> {}".format(ukw, new_letter))
+                if vverbose:
+                    print("{: >42}".format(alphabet))
+                    print("{: >42} --> {}".format(ukw, new_letter))
 
                 # send the current character back through the 3 Walzen in reverse order
                 for walze in walzen_curr[-1::-1]:
                     index = walze.index(new_letter)
                     new_letter = alphabet[index]
                     lex_index = ord(new_letter) - 65
-                    if vverbose: print("{: >38}".format(walze))
-                    if vverbose: print("{: >38} --> {}".format(alphabet, new_letter))
+                    if vverbose:
+                        print("{: >38}".format(walze))
+                        print("{: >38} --> {}".format(alphabet, new_letter))
 
                 char = chr(lex_index + 65)
 
@@ -248,24 +253,29 @@ class Enigma():
                 for stecker in sb:
                     if char in stecker:
                         char = stecker.replace(char, "")
-                        if vverbose: print("{: >8}Steckerbrett: {} --> {}".format("", new_letter, char))
+                        if vverbose:
+                            print("{: >8}Steckerbrett: {} --> {}".format("", new_letter, char))
                         break
 
-                if vverbose: print("{: >8}Output: {}".format("", char))
+                if vverbose:
+                    print("{: >8}Output: {}".format("", char))
 
                 # add the computed character to the encoded message
                 encoded_message = encoded_message + char
-                if vverbose: print("   ", encoded_message)
+                if vverbose:
+                    print("   ", encoded_message)
 
                 # rotate the Walzen according to the Ringkerben and the current position
                 walzen[0] = walzen[0][1:] + [walzen[0][0]]
                 count[0] = count[0] % 26 + 1
                 if count[0] == rk[0]:
-                    if vverbose: print("Rotate second Walze")
+                    if vverbose:
+                        print("Rotate second Walze")
                     walzen[1] = walzen[1][1:] + [walzen[1][0]]
                     count[1] = count[1] % 26 + 1
                     if count[1] == rk[1]:
-                        if vverbose: print("Rotate third Walze")
+                        if vverbose:
+                            print("Rotate third Walze")
                         walzen[2] = walzen[2][1:] + [walzen[2][0]]
         if verbose or vverbose:
             print("Message: {}\nCode:    {}".format(msg, encoded_message))
